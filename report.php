@@ -29,6 +29,11 @@ class Report {
         $query .= ' WHERE comments LIKE "%refer%"';
         break;
       break;
+
+      case 'signature':
+        $query .= ' WHERE comments LIKE "%signature%"';
+        break;
+      break;
     }
 
     $res = $this->db->query($query);
@@ -46,12 +51,31 @@ class Report {
   function getReferralResults(){
     return $this->getResults('referral');
   }
+
+  function getSignatureResults(){
+    return $this->getResults('signature');
+  }
 }
 
 $report = new Report($mysqli);
-$candyResults = $report->getCandyResults();
-$callbackResults = $report->getCallBackResults();
-$referralResults = $report->getReferralResults();
+$results = [
+  [ 
+    'title' => 'Candy Records', 
+    'results' => $candyResults = $report->getCandyResults()
+  ],
+  [ 
+    'title' => 'Callback Records', 
+    'results' => $callbackResults = $report->getCallBackResults()
+  ],
+  [ 
+    'title' => 'Referral Records', 
+    'results' => $referralResults = $report->getReferralResults()
+  ],
+  [ 
+    'title' => 'Signature Records', 
+    'results' => $signatureResults = $report->getSignatureResults()
+  ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +88,8 @@ $referralResults = $report->getReferralResults();
   <body>
     <h1>Sweetwater Code Test</h1>
 
-    <h3>Candy Results</h3>
+    <?php foreach ($results as $result) : ?>
+    <h2><?php echo $result['title']; ?></h2>
     <table>
       <thead>
         <tr>
@@ -74,58 +99,15 @@ $referralResults = $report->getReferralResults();
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($candyResults as $result) : ?>
+        <?php foreach ($result['results'] as $row) { ?>
           <tr>
-            <td><?php echo $result['orderid']; ?></td>
-            <td><?php echo $result['comments']; ?></td>
-            <td><?php echo $result['shipdate_expected']; ?></td>
+            <td><?php echo $row['orderid']; ?></td>
+            <td><?php echo $row['comments']; ?></td>
+            <td><?php echo $row['shipdate_expected']; ?></td>
           </tr>
-        <?php endforeach; ?>
+        <?php } ?>
       </tbody>
     </table>
-
-    <hr />
-
-    <h3>Calback Results</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Comments</th>
-          <th>Ship Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($callbackResults as $result) : ?>
-          <tr>
-            <td><?php echo $result['orderid']; ?></td>
-            <td><?php echo $result['comments']; ?></td>
-            <td><?php echo $result['shipdate_expected']; ?></td>
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-
-    <hr />
-
-    <h3>Referral Results</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Comments</th>
-          <th>Ship Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($referralResults as $result) : ?>
-          <tr>
-            <td><?php echo $result['orderid']; ?></td>
-            <td><?php echo $result['comments']; ?></td>
-            <td><?php echo $result['shipdate_expected']; ?></td>
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
+    <?php endforeach; ?>
   </body>
 </html>
