@@ -19,6 +19,11 @@ class Report {
         $query .= ' WHERE comments LIKE "%candy%"';
         break;
       break;
+
+      case 'callback':
+        $query .= ' WHERE comments LIKE "%call%"';
+        break;
+      break;
     }
 
     $res = $this->db->query($query);
@@ -60,6 +65,28 @@ $callbackResults = $report->getCallBackResults();
       </thead>
       <tbody>
         <?php foreach ($candyResults as $result) : ?>
+          <tr>
+            <td><?php echo $result['orderid']; ?></td>
+            <td><?php echo $result['comments']; ?></td>
+            <td><?php echo $result['shipdate_expected']; ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+
+    <hr />
+
+    <h3>Calback Results</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Comments</th>
+          <th>Ship Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($callbackResults as $result) : ?>
           <tr>
             <td><?php echo $result['orderid']; ?></td>
             <td><?php echo $result['comments']; ?></td>
