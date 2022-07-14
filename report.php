@@ -26,7 +26,7 @@ class Report {
       break;
 
       case 'referral':
-        $query .= ' WHERE comments LIKE "%refer%"';
+        $query .= ' WHERE comments LIKE "%referr%"'; // spelled incomplete to get "Referral *and* referred"
         break;
       break;
 
@@ -34,6 +34,15 @@ class Report {
         $query .= ' WHERE comments LIKE "%signature%"';
         break;
       break;
+
+      case 'other':
+      default:
+        $query .= ' WHERE comments NOT LIKE "%candy%" 
+                    AND comments NOT LIKE "%call%" 
+                    AND comments NOT LIKE "%referr%" 
+                    AND comments NOT LIKE "%signature%"';
+        break;
+      break; 
     }
 
     $res = $this->db->query($query);
@@ -55,25 +64,37 @@ class Report {
   function getSignatureResults(){
     return $this->getResults('signature');
   }
+
+  function getOtherResults(){
+    return $this->getResults('other');
+  }
 }
 
 $report = new Report($mysqli);
 $results = [
   [ 
     'title' => 'Candy', 
-    'results' => $candyResults = $report->getCandyResults()
+    'keyword' => 'candy',
+    'results' => $report->getCandyResults()
   ],
   [ 
     'title' => 'Callback', 
-    'results' => $callbackResults = $report->getCallBackResults()
+    'keyword' => 'call',
+    'results' => $report->getCallBackResults()
   ],
   [ 
     'title' => 'Referral', 
-    'results' => $referralResults = $report->getReferralResults()
+    'keyword' => 'refer',
+    'results' => $report->getReferralResults()
   ],
   [ 
     'title' => 'Signature', 
-    'results' => $signatureResults = $report->getSignatureResults()
+    'keyword' => 'signature',
+    'results' => $report->getSignatureResults()
+  ],
+  [ 
+    'title' => 'Miscellaneous', 
+    'results' => $report->getOtherResults()
   ]
 ];
 ?>
@@ -84,20 +105,35 @@ $results = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>DDC - Sweetwater Code Test</title>
+
+    <style>
+      html, body { font-family: Arial, Helvetica, sans-serif;}
+
+      .report th { background: #999; color: white; font-weight: bold; text-align: left; padding: 5px;}
+      .report th:first-child { width: 150px; }
+      .report th:last-child { width: 250px; }
+
+      .report tbody tr:nth-child(even) { background: #EFEFEF; }
+      .report tbody td:first-child { text-align: center; font-weight: bold; }
+      .report tbody td { padding: 5px; }
+      .report tbody td b { color: green; background-color: yellow; }
+    </style>
   </head>
   <body>
     <a name="top"></a>
-    <h1>Sweetwater Code Test</h1>
+    <h1>Customer Order Comments</h1>
 
     Jump to results: 
+    <ul>
       <?php foreach ($results as $result) : ?>
-        <a href="#<?php echo $result['title']; ?>"><?php echo $result['title']; ?></a> | 
+      <li><a href="#<?php echo $result['title']; ?>"><?php echo $result['title']; ?></a></li>
       <?php endforeach; ?>
+    </ul>
 
     <?php foreach ($results as $result) : ?>
     <a name="<?php echo $result['title']; ?>"></a>
     <h2><?php echo $result['title']; ?> Records <small><a href="#top">[top]</a></small></h2>
-    <table>
+    <table class="report">
       <thead>
         <tr>
           <th>Order ID</th>
@@ -106,13 +142,20 @@ $results = [
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($result['results'] as $row) { ?>
-          <tr>
-            <td><?php echo $row['orderid']; ?></td>
-            <td><?php echo $row['comments']; ?></td>
-            <td><?php echo $row['shipdate_expected']; ?></td>
-          </tr>
-        <?php } ?>
+        <?php foreach ($result['results'] as $row) : ?>
+        <tr>
+          <td><?php echo $row['orderid']; ?></td>
+          <td>
+            <?php if ($result['title'] === 'Miscellaneous') : ?>
+              <?php echo $row['comments']; ?>
+            <?php else : ?>
+              <?php $regex = "/\w*?". $result['keyword'] . "\w*/i"; ?>
+              <?php echo preg_replace($regex, "<b>$0</b>", $row['comments']); ?>
+            <?php endif; ?>
+          </td>
+          <td><?php echo $row['shipdate_expected']; ?></td>
+        </tr>
+        <?php endforeach; ?>
       </tbody>
     </table>
     <?php endforeach; ?>
