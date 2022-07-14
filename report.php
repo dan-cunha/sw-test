@@ -60,19 +60,19 @@ class Report {
 $report = new Report($mysqli);
 $results = [
   [ 
-    'title' => 'Candy Records', 
+    'title' => 'Candy', 
     'results' => $candyResults = $report->getCandyResults()
   ],
   [ 
-    'title' => 'Callback Records', 
+    'title' => 'Callback', 
     'results' => $callbackResults = $report->getCallBackResults()
   ],
   [ 
-    'title' => 'Referral Records', 
+    'title' => 'Referral', 
     'results' => $referralResults = $report->getReferralResults()
   ],
   [ 
-    'title' => 'Signature Records', 
+    'title' => 'Signature', 
     'results' => $signatureResults = $report->getSignatureResults()
   ]
 ];
@@ -86,10 +86,17 @@ $results = [
     <title>DDC - Sweetwater Code Test</title>
   </head>
   <body>
+    <a name="top"></a>
     <h1>Sweetwater Code Test</h1>
 
+    Jump to results: 
+      <?php foreach ($results as $result) : ?>
+        <a href="#<?php echo $result['title']; ?>"><?php echo $result['title']; ?></a> | 
+      <?php endforeach; ?>
+
     <?php foreach ($results as $result) : ?>
-    <h2><?php echo $result['title']; ?></h2>
+    <a name="<?php echo $result['title']; ?>"></a>
+    <h2><?php echo $result['title']; ?> Records <small><a href="#top">[top]</a></small></h2>
     <table>
       <thead>
         <tr>
