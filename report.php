@@ -16,7 +16,7 @@ class Report {
     // can be smarter about the WHERE/OR/AND stuff in future iterations
     switch ($filter) {
       case 'candy':
-        $query .= ' WHERE comments LIKE "%candy%"';
+        $query .= ' WHERE comments LIKE "%candy%" OR comments LIKE "%smarties%" OR comments LIKE "%bit o honey%"';
         break;
       break;
 
@@ -37,7 +37,9 @@ class Report {
 
       case 'other':
       default:
-        $query .= ' WHERE comments NOT LIKE "%candy%" 
+        $query .= ' WHERE comments NOT LIKE "%candy%"
+                      AND comments NOT LIKE "%smarties%" 
+                      AND comments NOT LIKE "%bit o honey%"
                     AND comments NOT LIKE "%call%" 
                     AND comments NOT LIKE "%referr%" 
                     AND comments NOT LIKE "%signature%"';
@@ -74,7 +76,7 @@ $report = new Report($mysqli);
 $results = [
   [ 
     'title' => 'Candy', 
-    'keyword' => 'candy',
+    'keyword' => 'candy|smarties|bit o honey',
     'results' => $report->getCandyResults()
   ],
   [ 
