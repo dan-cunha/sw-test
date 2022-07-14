@@ -29,3 +29,5 @@ foreach ($res  as $row ) {
           WHERE orderid = ' . $orderid; 
   $mysqli->query($sql);
 }
+
+echo 'Script complete.';
