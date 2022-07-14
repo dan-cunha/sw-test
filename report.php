@@ -17,22 +17,18 @@ class Report {
     switch ($filter) {
       case 'candy':
         $query .= ' WHERE comments LIKE "%candy%" OR comments LIKE "%smarties%" OR comments LIKE "%bit o honey%"';
-        break;
       break;
 
       case 'callback':
         $query .= ' WHERE comments LIKE "%call%"';
-        break;
       break;
 
       case 'referral':
         $query .= ' WHERE comments LIKE "%referr%"'; // spelled incomplete to get "Referral *and* referred"
-        break;
       break;
 
       case 'signature':
         $query .= ' WHERE comments LIKE "%signature%"';
-        break;
       break;
 
       case 'other':
@@ -43,7 +39,6 @@ class Report {
                     AND comments NOT LIKE "%call%" 
                     AND comments NOT LIKE "%referr%" 
                     AND comments NOT LIKE "%signature%"';
-        break;
       break; 
     }
 
