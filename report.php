@@ -24,6 +24,11 @@ class Report {
         $query .= ' WHERE comments LIKE "%call%"';
         break;
       break;
+
+      case 'referral':
+        $query .= ' WHERE comments LIKE "%refer%"';
+        break;
+      break;
     }
 
     $res = $this->db->query($query);
@@ -37,11 +42,16 @@ class Report {
   function getCallBackResults(){
     return $this->getResults('callback');
   }
+
+  function getReferralResults(){
+    return $this->getResults('referral');
+  }
 }
 
 $report = new Report($mysqli);
 $candyResults = $report->getCandyResults();
 $callbackResults = $report->getCallBackResults();
+$referralResults = $report->getReferralResults();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,6 +97,28 @@ $callbackResults = $report->getCallBackResults();
       </thead>
       <tbody>
         <?php foreach ($callbackResults as $result) : ?>
+          <tr>
+            <td><?php echo $result['orderid']; ?></td>
+            <td><?php echo $result['comments']; ?></td>
+            <td><?php echo $result['shipdate_expected']; ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+
+    <hr />
+
+    <h3>Referral Results</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Comments</th>
+          <th>Ship Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($referralResults as $result) : ?>
           <tr>
             <td><?php echo $result['orderid']; ?></td>
             <td><?php echo $result['comments']; ?></td>
