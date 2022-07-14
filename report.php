@@ -2,7 +2,7 @@
 
 require_once('./config.php');
 
-// connect to the data
+// connect to the database
 $mysqli = new mysqli($database['host'], $database['username'], $database['password'], $database['database']);
 
 class Report {
@@ -107,6 +107,7 @@ $results = [
     <title>DDC - Sweetwater Code Test</title>
 
     <style>
+      /* hacky terrible CSS for at least some flavor */
       html, body { font-family: Arial, Helvetica, sans-serif;}
 
       .report th { background: #999; color: white; font-weight: bold; text-align: left; padding: 5px;}
